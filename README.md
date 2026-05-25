@@ -1,5 +1,7 @@
-# MotoRoute Platform Web App v0.3
+# MotoRoute Platform Web App v0.4 Professional UI
 
-Bu paket v0.2 üzerine ana sayfa UI/UX yenilemesi, katalog paneli, modül kartları, canlı araç/işletme listeleri ve daha profesyonel header yapısı içerir.
+Bu paket MotoRoute için daha profesyonel katalog/servis ağı ana sayfası, kurumsal header, canlı Supabase özetleri, araç/parça/işletme modülleri ve belirgin v0.4 PRO etiketi içerir.
 
 GitHub repo ana dizinine içindeki dosyaları yükleyin. Vercel otomatik deploy alır.
+
+Doğru sürümü görmek için ana sayfada **MotoRoute v0.4 PRO** ibaresini kontrol edin.

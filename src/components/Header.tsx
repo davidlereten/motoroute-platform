@@ -7,12 +7,12 @@ import { getSupabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
 const links = [
-  { href: "/vehicles", label: "Araç Katalog" },
+  { href: "/vehicles", label: "Araçlar" },
   { href: "/brands", label: "Markalar" },
   { href: "/compare", label: "Karşılaştır" },
   { href: "/parts", label: "Parça Kodu" },
   { href: "/businesses", label: "Servis Ağı" },
-  { href: "/search", label: "Arama" }
+  { href: "/search", label: "Akıllı Arama" }
 ];
 
 export function Header() {
@@ -32,11 +32,16 @@ export function Header() {
 
   return (
     <header className="topbar">
+      <div className="top-strip">
+        <div className="top-strip-inner">
+          <span>MotoRoute v0.4 PRO</span>
+          <span>İlan sitesi değil: araç bilgi, teknik katalog, parça kodu ve servis ağı.</span>
+        </div>
+      </div>
       <div className="topbar-inner">
-        <Link className="logo" href="/" aria-label="MotoRoute ana sayfa">
+        <Link className="logo pro" href="/" aria-label="MotoRoute ana sayfa">
           <span className="logo-mark">MR</span>
-          <span className="logo-text"><b>Moto</b><b>Route</b></span>
-          <small>catalog</small>
+          <span className="logo-stack"><b>MotoRoute</b><small>vehicle intelligence</small></span>
         </Link>
         <nav className="nav" aria-label="Ana menü">
           {links.map((link) => (
