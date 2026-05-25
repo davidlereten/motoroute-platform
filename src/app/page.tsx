@@ -7,10 +7,21 @@ import { SearchPanel } from "@/components/SearchPanel";
 import { getSupabase } from "@/lib/supabase";
 import type { BrandProfile, BusinessResult, CatalogSummary } from "@/types/motoroute";
 
+type VehicleMini = {
+  result_type: string;
+  title: string;
+  subtitle: string | null;
+  trim_id: string | null;
+  generation_code: string | null;
+  brand_name: string | null;
+  model_name: string | null;
+};
+
 export default function HomePage() {
   const [summary, setSummary] = useState<CatalogSummary | null>(null);
   const [brands, setBrands] = useState<BrandProfile[]>([]);
   const [businesses, setBusinesses] = useState<BusinessResult[]>([]);
+  const [vehicles, setVehicles] = useState<VehicleMini[]>([]);
 
   useEffect(() => {
     const supabase = getSupabase();
@@ -18,6 +29,7 @@ export default function HomePage() {
 
     supabase.from("v_catalog_summary").select("*").maybeSingle().then(({ data }) => setSummary(data as CatalogSummary | null));
     supabase.from("v_brand_profiles").select("*").order("model_count", { ascending: false }).limit(8).then(({ data }) => setBrands((data || []) as BrandProfile[]));
+    supabase.rpc("search_vehicle_catalog_v2", { q: "bmw e46", limit_count: 6 }).then(({ data }) => setVehicles((data || []) as VehicleMini[]));
     supabase.rpc("search_businesses_v2", {
       q: "bmw e46 mekanik",
       user_lat: 41.025,
@@ -28,93 +40,136 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="container">
+    <main>
       <EnvNotice />
-      <section className="hero section">
-        <div className="hero-grid">
-          <div>
-            <div className="eyebrow">Araç bilgi platformu</div>
-            <h1 className="h1">Her araç, her kasa, her parça tek sistemde.</h1>
+      <section className="home-hero">
+        <div className="home-hero-inner">
+          <div className="hero-copy">
+            <div className="eyebrow">MotoRoute v0.3 • Araç bilgi ve servis ağı</div>
+            <h1 className="h1">Araç kataloğu, parça kodu ve uzman servis tek ekranda.</h1>
             <p className="lead">
-              Satış sitesi değil; marka profili, teknik karşılaştırma, parça kodu ve tamirci/parçacı bulma odaklı otomotiv bilgi platformu.
+              Satış/ilan sitesi değil; marka profili, kasa kodu, teknik veri, parça uyumluluğu ve tamirci/parçacı bulma altyapısı.
             </p>
             <SearchPanel />
-            <div className="stat-grid">
-              <div className="stat"><strong>{summary?.brand_count ?? "—"}</strong><span>Marka</span></div>
-              <div className="stat"><strong>{summary?.model_count ?? "—"}</strong><span>Model</span></div>
-              <div className="stat"><strong>{summary?.generation_count ?? "—"}</strong><span>Kasa / Jenerasyon</span></div>
-              <div className="stat"><strong>{summary?.trim_count ?? "—"}</strong><span>Versiyon / Trim</span></div>
+            <div className="hero-actions">
+              <Link className="btn accent" href="/vehicles?q=bmw%20e46">Araç katalog</Link>
+              <Link className="btn secondary dark-btn" href="/parts?q=DEMO-E46-FRONT-PAD">Parça kodu dene</Link>
+              <Link className="btn secondary dark-btn" href="/businesses?q=bmw%20e46%20mekanik">Servis bul</Link>
             </div>
           </div>
-          <div className="hero-card">
-            <h3>Profesyonel arama</h3>
-            <p className="mini-line">Kasa kodu, motor kodu, OE parça kodu ve işletme uzmanlığı aynı arama mantığına bağlandı.</p>
-            <div className="badges">
-              <Link className="badge dark" href="/search?q=bmw%20e46%20320ci">BMW E46 320Ci</Link>
-              <Link className="badge dark" href="/search?q=golf%20mk4">Golf Mk4</Link>
-              <Link className="badge dark" href="/search?q=ibiza%20kj1">Ibiza KJ1</Link>
-              <Link className="badge dark" href="/parts?q=34116761244">34116761244</Link>
-              <Link className="badge dark" href="/businesses?q=bmw%20e46%20mekanik">BMW E46 mekanik</Link>
+
+          <aside className="catalog-panel">
+            <div className="panel-head">
+              <span>Canlı katalog özeti</span>
+              <strong>Supabase</strong>
             </div>
+            <div className="metric-row"><span>Marka</span><strong>{summary?.brand_count ?? "—"}</strong></div>
+            <div className="metric-row"><span>Model</span><strong>{summary?.model_count ?? "—"}</strong></div>
+            <div className="metric-row"><span>Kasa / jenerasyon</span><strong>{summary?.generation_count ?? "—"}</strong></div>
+            <div className="metric-row"><span>Versiyon / trim</span><strong>{summary?.trim_count ?? "—"}</strong></div>
+            <div className="panel-note">BMW E46, Golf Mk4, Ibiza KJ1, OE parça kodu ve işletme araması aktif.</div>
+          </aside>
+        </div>
+      </section>
+
+      <section className="container section">
+        <div className="section-head">
+          <div>
+            <h2 className="section-title">Platform modülleri</h2>
+            <p className="section-subtitle">Araç bilgisi, parça arama ve servis ağı ayrı ayrı değil aynı veritabanından çalışır.</p>
+          </div>
+        </div>
+        <div className="module-grid">
+          <Link className="module-card" href="/vehicles">
+            <span className="module-code">01</span>
+            <h3>Araç kataloğu</h3>
+            <p>Marka, model, kasa, jenerasyon, motor kodu ve trim araması.</p>
+          </Link>
+          <Link className="module-card" href="/brands">
+            <span className="module-code">02</span>
+            <h3>Marka profilleri</h3>
+            <p>Menşei, model ağacı, yıllar, kasa kodları ve kategori dağılımı.</p>
+          </Link>
+          <Link className="module-card" href="/parts">
+            <span className="module-code">03</span>
+            <h3>Parça kodu</h3>
+            <p>OE/OEM, muadil kod, stok ve araç uyumluluğu.</p>
+          </Link>
+          <Link className="module-card" href="/businesses">
+            <span className="module-code">04</span>
+            <h3>Tamirci / parçacı</h3>
+            <p>Uzmanlık, mesafe, desteklediği marka-kasa-motor bilgisi.</p>
+          </Link>
+        </div>
+      </section>
+
+      <section className="container section two-col">
+        <div>
+          <div className="section-head slim">
+            <div>
+              <h2 className="section-title">Örnek araç sonuçları</h2>
+              <p className="section-subtitle">Canlı arama fonksiyonu: bmw e46</p>
+            </div>
+            <Link className="btn secondary" href="/vehicles?q=bmw%20e46">Tümünü aç</Link>
+          </div>
+          <div className="dense-list">
+            {vehicles.map((v, i) => (
+              <Link className="dense-row" href={v.trim_id ? `/vehicle/${v.trim_id}` : `/vehicles?q=${encodeURIComponent(v.title)}`} key={`${v.title}-${i}`}>
+                <span className="dense-icon">{v.generation_code || "MR"}</span>
+                <span><strong>{v.title}</strong><small>{v.subtitle || "Teknik katalog kaydı"}</small></span>
+                <em>{v.result_type}</em>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="section-head slim">
+            <div>
+              <h2 className="section-title">Yakındaki işletmeler</h2>
+              <p className="section-subtitle">Demo konum: İstanbul / Anadolu yakası</p>
+            </div>
+            <Link className="btn secondary" href="/businesses">Ara</Link>
+          </div>
+          <div className="dense-list">
+            {businesses.map((b) => (
+              <Link className="dense-row business" href="/businesses" key={b.business_id}>
+                <span className="dense-icon">{b.account_type === "parts_dealer" ? "PA" : "SR"}</span>
+                <span><strong>{b.business_name}</strong><small>{b.short_description_tr}</small></span>
+                <em>{b.distance_km !== null ? `${b.distance_km} km` : "—"}</em>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="section grid grid-3">
-        <Link className="card feature-card" href="/vehicles">
-          <h3 className="card-title">Araç katalog</h3>
-          <p className="card-subtitle">Marka, model, kasa, trim ve motor kodu seviyesinde arama.</p>
-          <div className="badges"><span className="badge accent">E46</span><span className="badge">Mk4</span><span className="badge">KJ1</span></div>
-        </Link>
-        <Link className="card feature-card" href="/parts">
-          <h3 className="card-title">Parça kodu</h3>
-          <p className="card-subtitle">OE/OEM, muadil kod ve araç uyumluluğu altyapısı.</p>
-          <div className="badges"><span className="badge success">34116761244</span><span className="badge">Bosch</span></div>
-        </Link>
-        <Link className="card feature-card" href="/businesses">
-          <h3 className="card-title">Tamirci / parçacı</h3>
-          <p className="card-subtitle">Uzmanlık, mesafe, desteklenen marka/model/kasa ve stok bilgisi.</p>
-          <div className="badges"><span className="badge warn">Konum</span><span className="badge">Uzmanlık</span></div>
-        </Link>
-      </section>
-
-      <section className="section">
+      <section className="container section">
         <div className="section-head">
-          <div><h2 className="section-title">Popüler markalar</h2><p className="section-subtitle">Marka profili, modeller, yıllar ve kasa kodları.</p></div>
+          <div>
+            <h2 className="section-title">Popüler markalar</h2>
+            <p className="section-subtitle">Marka profili, ülke, model sayısı ve kasa sayısı.</p>
+          </div>
           <Link className="btn secondary" href="/brands">Tüm markalar</Link>
         </div>
-        <div className="grid grid-4">
+        <div className="brand-strip">
           {brands.map((brand) => (
-            <Link className="card brand-card" href={`/brands/${brand.brand_slug}`} key={brand.brand_id}>
-              <div>
-                <div className="brand-logo">{brand.brand_name.slice(0, 2).toUpperCase()}</div>
-                <h3 className="card-title">{brand.flag_emoji || ""} {brand.brand_name}</h3>
-                <p className="card-subtitle">{brand.origin_country_tr || "Menşei bilgisi"} • {brand.model_count} model</p>
-              </div>
-              <div className="badges"><span className="badge">{brand.generation_count} kasa</span><span className="badge">{brand.trim_count} trim</span></div>
+            <Link className="brand-tile" href={`/brands/${brand.brand_slug}`} key={brand.brand_id}>
+              <span className="brand-symbol">{brand.logo_url ? "◎" : brand.brand_name.slice(0, 2).toUpperCase()}</span>
+              <strong>{brand.flag_emoji || ""} {brand.brand_name}</strong>
+              <small>{brand.origin_country_tr || "Menşei"} • {brand.model_count} model</small>
+              <div><b>{brand.generation_count}</b> kasa <b>{brand.trim_count}</b> trim</div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="section">
-        <div className="section-head">
-          <div><h2 className="section-title">Yakındaki işletmeler</h2><p className="section-subtitle">Tamirci, parçacı, kaportacı ve uzman servis kayıtları.</p></div>
-          <Link className="btn secondary" href="/businesses">İşletme ara</Link>
+      <section className="container section compare-band">
+        <div>
+          <span className="eyebrow light">Sıradaki modül</span>
+          <h2>Teknik tablo ve karşılaştırma ekranı büyütülecek.</h2>
+          <p>Şu an DB tarafında teknik veri view’ları hazır. Sonraki aşamada araç detay sayfasını sahibinden/arabam benzeri teknik tablo düzenine taşıyoruz.</p>
         </div>
-        <div className="grid grid-3">
-          {businesses.map((b) => (
-            <Link className="card" href="/businesses" key={b.business_id}>
-              <h3 className="card-title">{b.business_name}</h3>
-              <p className="card-subtitle">{b.short_description_tr}</p>
-              <div className="badges">
-                <span className="badge success">★ {b.rating_avg}</span>
-                {b.distance_km !== null && <span className="badge">{b.distance_km} km</span>}
-                {b.is_verified && <span className="badge accent">Doğrulanmış</span>}
-              </div>
-            </Link>
-          ))}
-        </div>
+        <Link className="btn accent" href="/compare">Karşılaştırmayı aç</Link>
       </section>
     </main>
   );

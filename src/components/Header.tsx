@@ -7,11 +7,11 @@ import { getSupabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 
 const links = [
-  { href: "/vehicles", label: "Araçlar" },
+  { href: "/vehicles", label: "Araç Katalog" },
   { href: "/brands", label: "Markalar" },
   { href: "/compare", label: "Karşılaştır" },
-  { href: "/parts", label: "Parça Ara" },
-  { href: "/businesses", label: "Tamirci / Parçacı" },
+  { href: "/parts", label: "Parça Kodu" },
+  { href: "/businesses", label: "Servis Ağı" },
   { href: "/search", label: "Arama" }
 ];
 
@@ -35,14 +35,15 @@ export function Header() {
       <div className="topbar-inner">
         <Link className="logo" href="/" aria-label="MotoRoute ana sayfa">
           <span className="logo-mark">MR</span>
-          <span>Moto</span><span className="logo-route">Route</span>
+          <span className="logo-text"><b>Moto</b><b>Route</b></span>
+          <small>catalog</small>
         </Link>
         <nav className="nav" aria-label="Ana menü">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              style={pathname?.startsWith(link.href) ? { background: "#f8fafc", color: "#101828" } : undefined}
+              className={pathname?.startsWith(link.href) ? "active" : ""}
             >
               {link.label}
             </Link>
