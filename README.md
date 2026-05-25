@@ -61,3 +61,4 @@ http://localhost:3000
 ## Not
 
 Bu paket `service_role` kullanmaz. Tüm veri erişimi Supabase RLS ve public view/function izinleri üzerinden yapılır.
+Deploy trigger
