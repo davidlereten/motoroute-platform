@@ -47,6 +47,7 @@ function SearchContent() {
               <div className="result-subtitle">{item.subtitle || "Katalog sonucu"}</div>
               <div className="badges"><span className="badge accent">{item.entity_type}</span><span className="badge">{item.match_reason}</span></div>
             </div>
+            <div className="result-action">Aç →</div>
           </Link>
         ))}
       </section>

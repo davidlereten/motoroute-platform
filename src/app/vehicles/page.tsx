@@ -15,7 +15,7 @@ export default function VehiclesPage() {
     const supabase = getSupabase();
     if (!supabase) return;
     setLoading(true);
-    const { data } = await supabase.rpc("search_vehicle_catalog_v2", { q: nextQuery, limit_count: 40 });
+    const { data } = await supabase.rpc("search_vehicle_catalog_v2", { q: nextQuery, limit_count: 50 });
     setResults((data || []) as VehicleSearchResult[]);
     setLoading(false);
   }
@@ -33,9 +33,10 @@ export default function VehiclesPage() {
       <div className="section-head section">
         <div><h1 className="section-title">Araç kataloğu</h1><p className="section-subtitle">Marka, model, kasa kodu, motor kodu ve trim araması.</p></div>
       </div>
-      <form className="search-panel" onSubmit={submit}>
+      <form className="toolbar" onSubmit={submit}>
         <input className="input" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="BMW E46, Golf Mk4, Ibiza KJ1..." />
         <button className="btn">Araç ara</button>
+        <span className="badge">{results.length} sonuç</span>
       </form>
       <section className="section result-list">
         {loading && <div className="alert">Araç kataloğu aranıyor...</div>}

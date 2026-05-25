@@ -40,9 +40,9 @@ function PartsContent() {
 
   return (
     <>
-      <form className="search-panel" onSubmit={(e) => { e.preventDefault(); search(); }}>
+      <form className="toolbar" onSubmit={(e) => { e.preventDefault(); search(); }}>
         <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Parça adı, OE kodu, muadil kod, motor kodu..." />
-        <button className="btn">Parça ara</button>
+        <button className="btn">Parça ara</button><span className="badge">Kod / OE / stok</span>
       </form>
       <section className="grid grid-2 section">
         <div className="card">

@@ -36,7 +36,7 @@ export default function BusinessesPage() {
       <section className="section-head section">
         <div><h1 className="section-title">Tamirci / Parçacı</h1><p className="section-subtitle">Konuma, uzmanlığa, marka/model/kasa ve motor koduna göre işletme arama.</p></div>
       </section>
-      <form className="search-panel" onSubmit={submit}>
+      <form className="toolbar" onSubmit={submit}>
         <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="BMW E46 mekanik, parça, kaporta, M54..." />
         <select className="select" value={type} onChange={(e) => setType(e.target.value)}>
           <option value="">Tüm işletmeler</option>
@@ -50,12 +50,8 @@ export default function BusinessesPage() {
       <section className="grid grid-3 section">
         {items.map((b) => (
           <div className="card" key={b.business_id}>
-            <div className="section-head" style={{ marginBottom: 0 }}>
-              <div>
-                <h3 className="card-title">{b.business_name}</h3>
-                <p className="card-subtitle">{b.city} / {b.district} • {b.short_description_tr}</p>
-              </div>
-            </div>
+            <h3 className="card-title">{b.business_name}</h3>
+            <p className="card-subtitle">{b.city} / {b.district} • {b.short_description_tr}</p>
             <div className="badges">
               <span className="badge success">★ {b.rating_avg} ({b.review_count})</span>
               {b.distance_km !== null && <span className="badge">{b.distance_km} km</span>}

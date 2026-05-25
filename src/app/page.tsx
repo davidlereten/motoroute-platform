@@ -36,7 +36,7 @@ export default function HomePage() {
             <div className="eyebrow">Araç bilgi platformu</div>
             <h1 className="h1">Her araç, her kasa, her parça tek sistemde.</h1>
             <p className="lead">
-              Satış sitesi değil; araç bilgi, teknik karşılaştırma, marka profili, parça kodu ve tamirci/parçacı bulma platformu.
+              Satış sitesi değil; marka profili, teknik karşılaştırma, parça kodu ve tamirci/parçacı bulma odaklı otomotiv bilgi platformu.
             </p>
             <SearchPanel />
             <div className="stat-grid">
@@ -47,16 +47,35 @@ export default function HomePage() {
             </div>
           </div>
           <div className="hero-card">
-            <h3 style={{ marginTop: 0 }}>Hızlı arama örnekleri</h3>
+            <h3>Profesyonel arama</h3>
+            <p className="mini-line">Kasa kodu, motor kodu, OE parça kodu ve işletme uzmanlığı aynı arama mantığına bağlandı.</p>
             <div className="badges">
-              <Link className="badge" href="/search?q=bmw%20e46%20320ci">BMW E46 320Ci</Link>
-              <Link className="badge" href="/search?q=golf%20mk4">Golf Mk4</Link>
-              <Link className="badge" href="/search?q=ibiza%20kj1">Ibiza KJ1</Link>
-              <Link className="badge" href="/parts?q=34116761244">34116761244</Link>
-              <Link className="badge" href="/businesses?q=bmw%20e46%20mekanik">BMW E46 mekanik</Link>
+              <Link className="badge dark" href="/search?q=bmw%20e46%20320ci">BMW E46 320Ci</Link>
+              <Link className="badge dark" href="/search?q=golf%20mk4">Golf Mk4</Link>
+              <Link className="badge dark" href="/search?q=ibiza%20kj1">Ibiza KJ1</Link>
+              <Link className="badge dark" href="/parts?q=34116761244">34116761244</Link>
+              <Link className="badge dark" href="/businesses?q=bmw%20e46%20mekanik">BMW E46 mekanik</Link>
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="section grid grid-3">
+        <Link className="card feature-card" href="/vehicles">
+          <h3 className="card-title">Araç katalog</h3>
+          <p className="card-subtitle">Marka, model, kasa, trim ve motor kodu seviyesinde arama.</p>
+          <div className="badges"><span className="badge accent">E46</span><span className="badge">Mk4</span><span className="badge">KJ1</span></div>
+        </Link>
+        <Link className="card feature-card" href="/parts">
+          <h3 className="card-title">Parça kodu</h3>
+          <p className="card-subtitle">OE/OEM, muadil kod ve araç uyumluluğu altyapısı.</p>
+          <div className="badges"><span className="badge success">34116761244</span><span className="badge">Bosch</span></div>
+        </Link>
+        <Link className="card feature-card" href="/businesses">
+          <h3 className="card-title">Tamirci / parçacı</h3>
+          <p className="card-subtitle">Uzmanlık, mesafe, desteklenen marka/model/kasa ve stok bilgisi.</p>
+          <div className="badges"><span className="badge warn">Konum</span><span className="badge">Uzmanlık</span></div>
+        </Link>
       </section>
 
       <section className="section">
@@ -66,9 +85,12 @@ export default function HomePage() {
         </div>
         <div className="grid grid-4">
           {brands.map((brand) => (
-            <Link className="card" href={`/brands/${brand.brand_slug}`} key={brand.brand_id}>
-              <h3 className="card-title">{brand.flag_emoji || ""} {brand.brand_name}</h3>
-              <p className="card-subtitle">{brand.origin_country_tr || "Menşei bilgisi"} • {brand.model_count} model</p>
+            <Link className="card brand-card" href={`/brands/${brand.brand_slug}`} key={brand.brand_id}>
+              <div>
+                <div className="brand-logo">{brand.brand_name.slice(0, 2).toUpperCase()}</div>
+                <h3 className="card-title">{brand.flag_emoji || ""} {brand.brand_name}</h3>
+                <p className="card-subtitle">{brand.origin_country_tr || "Menşei bilgisi"} • {brand.model_count} model</p>
+              </div>
               <div className="badges"><span className="badge">{brand.generation_count} kasa</span><span className="badge">{brand.trim_count} trim</span></div>
             </Link>
           ))}

@@ -28,12 +28,18 @@ export default function BrandsPage() {
       <section className="section-head section">
         <div><h1 className="section-title">Markalar</h1><p className="section-subtitle">Marka profilleri, model sayıları, üretim ülkesi ve kategori dağılımı.</p></div>
       </section>
-      <div className="search-panel"><input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="BMW, Saab, Volkswagen, Tofaş..." /><span /></div>
+      <div className="toolbar">
+        <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="BMW, Saab, Volkswagen, Tofaş..." />
+        <span className="badge">{filtered.length} marka</span>
+      </div>
       <section className="grid grid-4 section">
         {filtered.map((brand) => (
-          <Link className="card" key={brand.brand_id} href={`/brands/${brand.brand_slug}`}>
-            <h3 className="card-title">{brand.flag_emoji || ""} {brand.brand_name}</h3>
-            <p className="card-subtitle">{brand.origin_country_tr || "Ülke bilgisi yok"}</p>
+          <Link className="card brand-card" key={brand.brand_id} href={`/brands/${brand.brand_slug}`}>
+            <div>
+              <div className="brand-logo">{brand.brand_name.slice(0, 2).toUpperCase()}</div>
+              <h3 className="card-title">{brand.flag_emoji || ""} {brand.brand_name}</h3>
+              <p className="card-subtitle">{brand.origin_country_tr || "Ülke bilgisi yok"}</p>
+            </div>
             <div className="badges">
               <span className="badge">{brand.model_count} model</span>
               <span className="badge">{brand.generation_count} kasa</span>
